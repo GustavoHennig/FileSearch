@@ -12,3 +12,5 @@ https://github.com/GustavoHennig/FileSearch/releases/tag/1.0.0.5
 This code is old, it was written in 2009, but still works. \o/
 
 Gustavo Augusto Hennig
+
+From: [Plagius - Plagiarism Checker](http://www.plagius.com)
