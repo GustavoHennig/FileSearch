@@ -20,7 +20,7 @@ namespace FileSearching
         {
             ConfigFile = Path.GetDirectoryName(Application.ExecutablePath) + "\\config.xml";
 
-            VerificaRegistro();
+            SetRegistryShellOption();
 
             if (File.Exists(ConfigFile))
             {
@@ -36,11 +36,11 @@ namespace FileSearching
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new MainWindow());
         }
-        private static void VerificaRegistro()
+        private static void SetRegistryShellOption()
         {
             try
             {
-                Registry.SetValue("HKEY_CLASSES_ROOT\\Directory\\shell\\Neliware FileSearch\\command", "", "\"" + Application.ExecutablePath + "\" \"%1\"");
+                Registry.SetValue("HKEY_CLASSES_ROOT\\Directory\\shell\\GH Software FileSearch\\command", "", "\"" + Application.ExecutablePath + "\" \"%1\"");
             }
             catch (Exception)
             {

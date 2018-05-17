@@ -8,7 +8,7 @@ using System.Windows.Forms;
 using System.IO;
 using System.Diagnostics;
 using System.Linq;
-
+using FileSearch.Properties;
 
 namespace FileSearching
 {
@@ -59,10 +59,13 @@ namespace FileSearching
 
             Serializer s = new Serializer();
             s.Grava(Program.cgf, Program.ConfigFile);
+
         }
 
         private void LoadData()
         {
+
+            //Settings.Default.FileNameHistory.ToString();
 
             foreach (string s in Program.cgf.SugFileNames)
             {
@@ -86,10 +89,10 @@ namespace FileSearching
         {
 
 
-            MudaStatus("Saving data...");
+            PrintStatus("Saving data...");
             SaveData();
             lstFiles.Items.Clear();
-            MudaStatus("Searching files...");
+            PrintStatus("Searching files...");
             FileSearcher fs = new FileSearcher();
             fs.estado += new Estado(fs_estado);
 
@@ -97,7 +100,7 @@ namespace FileSearching
             List<FileInfo> files = fs.SearchFiles(cmbPath.Text, cmbFileName.Text, cmbInFile.Text, chkCaseSens.Checked);
 
 
-            MudaStatus("Listing files...");
+            PrintStatus("Listing files...");
 
 
             int limit = 2000;
@@ -107,22 +110,22 @@ namespace FileSearching
             //}
             //else
             //{
-                foreach (FileInfo f in files)
-                {
-                    lstFiles.Items.Add(f);
-                    limit--;
-                    if (limit < 0)
-                        break;
-                }
+            foreach (FileInfo f in files)
+            {
+                lstFiles.Items.Add(f);
+                limit--;
+                if (limit < 0)
+                    break;
+            }
             //}
 
-            MudaStatus("Ready.");
+            PrintStatus("Ready.");
 
         }
 
         void fs_estado(string value)
         {
-            MudaStatus(value);
+            PrintStatus(value);
         }
 
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
@@ -145,7 +148,7 @@ namespace FileSearching
 
 
         }
-        private void MudaStatus(string status)
+        private void PrintStatus(string status)
         {
             lblEstado.Text = status;
             Application.DoEvents();
@@ -160,7 +163,13 @@ namespace FileSearching
 
         private void lblStatus_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("https://github.com/GustavoHennig");
+            try
+            {
+                System.Diagnostics.Process.Start("https://github.com/GustavoHennig/FileSearch");
+            }
+            catch (Exception)
+            {
+            }
         }
 
         private void btnSearchFolder_Click(object sender, EventArgs e)
@@ -173,5 +182,9 @@ namespace FileSearching
             }
         }
 
+        private void MainWindow_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Settings.Default.Save();
+        }
     }
 }
