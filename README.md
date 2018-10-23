@@ -1,6 +1,8 @@
 # FileSearch
-This is desktop file searcher without index, simple, easy, search everything, including contents.
- *  Yes, it's slow, don't try search your entire disk drive :|
+
+This is a desktop file searcher without indexing. Simple and easy, it searches everything, including contents.
+
+ * Yes, it's slow, don't try to search your entire disk drive :|
 
 Download the binary here:
 https://github.com/GustavoHennig/FileSearch/releases/tag/1.0.0.5
