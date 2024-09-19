@@ -8,9 +8,8 @@ using System.Windows.Forms;
 using System.IO;
 using System.Diagnostics;
 using System.Linq;
-using FileSearch.Properties;
 
-namespace FileSearching
+namespace SimpleFileSearch
 {
     public partial class MainWindow : Form
     {
@@ -19,76 +18,65 @@ namespace FileSearching
             InitializeComponent();
             LoadData();
             this.Text += " - " + Application.ProductVersion;
-
-
-
         }
+
         private void SaveData()
         {
-
             const int tammax = 50;
 
-            if (!Program.cgf.SugFileNames.Contains(cmbFileName.Text))
+            if (!Settings.Current.FileNameHistory.Contains(cmbFileName.Text))
             {
-                Program.cgf.SugFileNames.Insert(0, cmbFileName.Text);
+                Settings.Current.FileNameHistory.Insert(0, cmbFileName.Text);
                 cmbFileName.Items.Insert(0, cmbFileName.Text);
-                if (Program.cgf.SugFileNames.Count > tammax)
+                if (Settings.Current.FileNameHistory.Count > tammax)
                 {
-                    Program.cgf.SugFileNames.RemoveAt(tammax - 1);
+                    Settings.Current.FileNameHistory.RemoveAt(tammax - 1);
                 }
             }
 
-            if (!Program.cgf.SugInFiles.Contains(cmbInFile.Text))
+            if (!Settings.Current.SearchInsideFiles.Contains(cmbInFile.Text))
             {
-                Program.cgf.SugInFiles.Insert(0, cmbInFile.Text);
+                Settings.Current.SearchInsideFiles.Insert(0, cmbInFile.Text);
                 cmbInFile.Items.Insert(0, cmbInFile.Text);
-                if (Program.cgf.SugInFiles.Count > tammax)
+                if (Settings.Current.SearchInsideFiles.Count > tammax)
                 {
-                    Program.cgf.SugInFiles.RemoveAt(tammax - 1);
+                    Settings.Current.SearchInsideFiles.RemoveAt(tammax - 1);
                 }
             }
-            if (!Program.cgf.SugPaths.Contains(cmbPath.Text))
+            if (!Settings.Current.PathHistory.Contains(cmbPath.Text))
             {
-                Program.cgf.SugPaths.Insert(0, cmbPath.Text);
+                Settings.Current.PathHistory.Insert(0, cmbPath.Text);
                 cmbPath.Items.Insert(0, cmbPath.Text);
-                if (Program.cgf.SugPaths.Count > tammax)
+                if (Settings.Current.PathHistory.Count > tammax)
                 {
-                    Program.cgf.SugPaths.RemoveAt(tammax - 1);
+                    Settings.Current.PathHistory.RemoveAt(tammax - 1);
                 }
             }
 
-            Serializer s = new Serializer();
-            s.Grava(Program.cgf, Program.ConfigFile);
-
+            Settings.Save();
         }
 
         private void LoadData()
         {
-
-            //Settings.Default.FileNameHistory.ToString();
-
-            foreach (string s in Program.cgf.SugFileNames)
+            foreach (string s in Settings.Current.FileNameHistory)
             {
                 cmbFileName.Items.Add(s);
             }
 
-            foreach (string s in Program.cgf.SugInFiles)
+            foreach (string s in Settings.Current.SearchInsideFiles)
             {
                 cmbInFile.Items.Add(s);
             }
-            foreach (string s in Program.cgf.SugPaths)
+            foreach (string s in Settings.Current.PathHistory)
             {
                 cmbPath.Items.Add(s);
             }
 
-            cmbPath.Text = Program.cgf.arg;
-
+            cmbPath.Text = Settings.Current.CurrentDirectory;
         }
 
         private void btnSearch_Click(object sender, EventArgs e)
         {
-
-
             PrintStatus("Saving data...");
             SaveData();
             lstFiles.Items.Clear();
@@ -96,20 +84,11 @@ namespace FileSearching
             FileSearcher fs = new FileSearcher();
             fs.estado += new Estado(fs_estado);
 
-
             List<FileInfo> files = fs.SearchFiles(cmbPath.Text, cmbFileName.Text, cmbInFile.Text, chkCaseSens.Checked);
-
 
             PrintStatus("Listing files...");
 
-
             int limit = 2000;
-            //if (files.Count > 2000)
-            //{
-            //    MessageBox.Show("There are more than 2000 files founded. They won't be displayed.");
-            //}
-            //else
-            //{
             foreach (FileInfo f in files)
             {
                 lstFiles.Items.Add(f);
@@ -117,10 +96,8 @@ namespace FileSearching
                 if (limit < 0)
                     break;
             }
-            //}
 
             PrintStatus("Ready.");
-
         }
 
         void fs_estado(string value)
@@ -128,32 +105,20 @@ namespace FileSearching
             PrintStatus(value);
         }
 
-        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
         private void lstFiles_DoubleClick(object sender, EventArgs e)
         {
-
             if (lstFiles.SelectedItem != null)
             {
-
-
                 FileInfo f = (FileInfo)lstFiles.SelectedItem;
-
                 Process.Start(Environment.GetEnvironmentVariable("Windir") + "\\" + "explorer.exe", f.Directory.FullName);
-
             }
-
-
         }
+
         private void PrintStatus(string status)
         {
             lblEstado.Text = status;
             Application.DoEvents();
             lblEstado.Refresh();
-
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
@@ -184,7 +149,7 @@ namespace FileSearching
 
         private void MainWindow_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Settings.Default.Save();
+            //Settings.Default.Save();
         }
     }
 }

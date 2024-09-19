@@ -4,13 +4,12 @@ using System.Windows.Forms;
 using System.IO;
 using Microsoft.Win32;
 
-namespace FileSearching
+namespace SimpleFileSearch
 {
     static class Program
     {
 
-        public static Config cgf = new Config();
-        public static string ConfigFile;
+
 
         /// <summary>
         /// The main entry point for the application.
@@ -18,20 +17,21 @@ namespace FileSearching
         [STAThread]
         static void Main(string[] args)
         {
-            ConfigFile = Path.GetDirectoryName(Application.ExecutablePath) + "\\config.xml";
-
             SetRegistryShellOption();
-
-            if (File.Exists(ConfigFile))
-            {
-                Serializer s = new Serializer();
-                cgf = (Config)s.Busca(ConfigFile, typeof(Config));
-            }
+            Settings.Load();
             if (args.Length > 0)
             {
-                cgf.arg = args[0];
+                string path = args[0];
+                if (Directory.Exists(path))
+                {
+                    Settings.Current.CurrentDirectory = path;
+                }
+                else
+                {
+                    Settings.Current.CurrentDirectory = Path.GetDirectoryName(path);
+                }
+                Settings.Save();
             }
-
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new MainWindow());

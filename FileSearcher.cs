@@ -12,7 +12,7 @@ using System;
 using System.Collections.Generic;
 
 
-namespace FileSearching
+namespace SimpleFileSearch
 {
 
 

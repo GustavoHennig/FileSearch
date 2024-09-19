@@ -1,4 +1,4 @@
-﻿namespace FileSearching
+﻿namespace SimpleFileSearch
 {
     partial class MainWindow
     {
@@ -47,7 +47,7 @@
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.lstFiles = new System.Windows.Forms.ListBox();
             this.lblStatus = new System.Windows.Forms.Label();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)this.splitContainer1).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
@@ -62,7 +62,6 @@
             // 
             // splitContainer1
             // 
-            this.splitContainer1.DataBindings.Add(new System.Windows.Forms.Binding("SplitterDistance", global::FileSearch.Properties.Settings.Default, "splitterDistance", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainer1.Location = new System.Drawing.Point(0, 0);
             this.splitContainer1.Name = "splitContainer1";
@@ -75,7 +74,7 @@
             // 
             this.splitContainer1.Panel2.Controls.Add(this.tableLayoutPanel2);
             this.splitContainer1.Size = new System.Drawing.Size(1318, 825);
-            this.splitContainer1.SplitterDistance = global::FileSearch.Properties.Settings.Default.splitterDistance;
+            this.splitContainer1.SplitterDistance = 545;
             this.splitContainer1.TabIndex = 13;
             // 
             // tableLayoutPanel1
@@ -117,22 +116,20 @@
             this.label2.Location = new System.Drawing.Point(7, 7);
             this.label2.Margin = new System.Windows.Forms.Padding(7);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(78, 20);
+            this.label2.Size = new System.Drawing.Size(87, 25);
             this.label2.TabIndex = 0;
             this.label2.Text = "File name";
             // 
             // panel1
             // 
-            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.tableLayoutPanel1.SetColumnSpan(this.panel1, 3);
             this.panel1.Controls.Add(this.lblEstado);
-            this.panel1.Location = new System.Drawing.Point(4, 319);
+            this.panel1.Location = new System.Drawing.Point(4, 350);
             this.panel1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(537, 501);
+            this.panel1.Size = new System.Drawing.Size(537, 470);
             this.panel1.TabIndex = 11;
             // 
             // lblEstado
@@ -141,112 +138,107 @@
             this.lblEstado.Location = new System.Drawing.Point(9, 9);
             this.lblEstado.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblEstado.Name = "lblEstado";
-            this.lblEstado.Size = new System.Drawing.Size(0, 20);
+            this.lblEstado.Size = new System.Drawing.Size(0, 25);
             this.lblEstado.TabIndex = 0;
             // 
             // chkCaseSens
             // 
             this.chkCaseSens.AutoSize = true;
-            this.chkCaseSens.Checked = global::FileSearch.Properties.Settings.Default.CaseSensitive;
-            this.chkCaseSens.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::FileSearch.Properties.Settings.Default, "CaseSensitive", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.chkCaseSens.Location = new System.Drawing.Point(7, 151);
+            this.chkCaseSens.Location = new System.Drawing.Point(7, 171);
             this.chkCaseSens.Margin = new System.Windows.Forms.Padding(7);
             this.chkCaseSens.Name = "chkCaseSens";
-            this.chkCaseSens.Size = new System.Drawing.Size(137, 24);
+            this.chkCaseSens.Size = new System.Drawing.Size(147, 29);
             this.chkCaseSens.TabIndex = 12;
             this.chkCaseSens.Text = "Case sensitive";
             this.chkCaseSens.UseVisualStyleBackColor = true;
             // 
             // btnSearchFolder
             // 
-            this.btnSearchFolder.Location = new System.Drawing.Point(503, 221);
+            this.btnSearchFolder.Location = new System.Drawing.Point(503, 251);
             this.btnSearchFolder.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.btnSearchFolder.Name = "btnSearchFolder";
             this.btnSearchFolder.Size = new System.Drawing.Size(38, 32);
             this.btnSearchFolder.TabIndex = 10;
             this.btnSearchFolder.Text = "...";
             this.btnSearchFolder.UseVisualStyleBackColor = true;
-            this.btnSearchFolder.Click += new System.EventHandler(this.btnSearchFolder_Click);
+            this.btnSearchFolder.Click += this.btnSearchFolder_Click;
             // 
             // cmbFileName
             // 
-            this.cmbFileName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmbFileName.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             this.tableLayoutPanel1.SetColumnSpan(this.cmbFileName, 3);
             this.cmbFileName.FormattingEnabled = true;
-            this.cmbFileName.Location = new System.Drawing.Point(4, 39);
+            this.cmbFileName.Location = new System.Drawing.Point(4, 44);
             this.cmbFileName.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.cmbFileName.Name = "cmbFileName";
-            this.cmbFileName.Size = new System.Drawing.Size(537, 28);
+            this.cmbFileName.Size = new System.Drawing.Size(537, 33);
             this.cmbFileName.TabIndex = 1;
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(7, 79);
+            this.label3.Location = new System.Drawing.Point(7, 89);
             this.label3.Margin = new System.Windows.Forms.Padding(7);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(174, 20);
+            this.label3.Size = new System.Drawing.Size(192, 25);
             this.label3.TabIndex = 2;
             this.label3.Text = "Search in files contents";
             // 
             // cmbPath
             // 
-            this.cmbPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmbPath.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             this.tableLayoutPanel1.SetColumnSpan(this.cmbPath, 2);
             this.cmbPath.FormattingEnabled = true;
-            this.cmbPath.Location = new System.Drawing.Point(4, 221);
+            this.cmbPath.Location = new System.Drawing.Point(4, 251);
             this.cmbPath.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.cmbPath.Name = "cmbPath";
-            this.cmbPath.Size = new System.Drawing.Size(491, 28);
+            this.cmbPath.Size = new System.Drawing.Size(491, 33);
             this.cmbPath.TabIndex = 5;
             // 
             // cmbInFile
             // 
-            this.cmbInFile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmbInFile.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             this.tableLayoutPanel1.SetColumnSpan(this.cmbInFile, 3);
             this.cmbInFile.FormattingEnabled = true;
-            this.cmbInFile.Location = new System.Drawing.Point(4, 111);
+            this.cmbInFile.Location = new System.Drawing.Point(4, 126);
             this.cmbInFile.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.cmbInFile.Name = "cmbInFile";
-            this.cmbInFile.Size = new System.Drawing.Size(537, 28);
+            this.cmbInFile.Size = new System.Drawing.Size(537, 33);
             this.cmbInFile.TabIndex = 3;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(7, 189);
+            this.label1.Location = new System.Drawing.Point(7, 214);
             this.label1.Margin = new System.Windows.Forms.Padding(7);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(42, 20);
+            this.label1.Size = new System.Drawing.Size(46, 25);
             this.label1.TabIndex = 4;
             this.label1.Text = "Path";
             // 
             // btnSearch
             // 
-            this.btnSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSearch.Location = new System.Drawing.Point(247, 263);
+            this.btnSearch.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            this.btnSearch.Location = new System.Drawing.Point(247, 294);
             this.btnSearch.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.btnSearch.Name = "btnSearch";
             this.btnSearch.Size = new System.Drawing.Size(120, 46);
             this.btnSearch.TabIndex = 6;
             this.btnSearch.Text = "Search";
             this.btnSearch.UseVisualStyleBackColor = true;
-            this.btnSearch.Click += new System.EventHandler(this.btnSearch_Click);
+            this.btnSearch.Click += this.btnSearch_Click;
             // 
             // btnCancel
             // 
-            this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnCancel.Location = new System.Drawing.Point(376, 263);
+            this.btnCancel.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            this.btnCancel.Location = new System.Drawing.Point(376, 294);
             this.btnCancel.Margin = new System.Windows.Forms.Padding(5);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(118, 46);
             this.btnCancel.TabIndex = 7;
             this.btnCancel.Text = "Close";
             this.btnCancel.UseVisualStyleBackColor = true;
-            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
+            this.btnCancel.Click += this.btnCancel_Click;
             // 
             // tableLayoutPanel2
             // 
@@ -266,25 +258,22 @@
             // 
             // lstFiles
             // 
-            this.lstFiles.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lstFiles.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             this.tableLayoutPanel2.SetColumnSpan(this.lstFiles, 2);
             this.lstFiles.FormattingEnabled = true;
-            this.lstFiles.ItemHeight = 20;
+            this.lstFiles.ItemHeight = 25;
             this.lstFiles.Location = new System.Drawing.Point(4, 35);
             this.lstFiles.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.lstFiles.Name = "lstFiles";
-            this.lstFiles.Size = new System.Drawing.Size(761, 784);
+            this.lstFiles.Size = new System.Drawing.Size(761, 779);
             this.lstFiles.TabIndex = 8;
-            this.lstFiles.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
-            this.lstFiles.DoubleClick += new System.EventHandler(this.lstFiles_DoubleClick);
+            this.lstFiles.DoubleClick += this.lstFiles_DoubleClick;
             // 
             // lblStatus
             // 
-            this.lblStatus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblStatus.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             this.lblStatus.AutoSize = true;
-            this.lblStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, 0);
             this.lblStatus.ForeColor = System.Drawing.Color.Navy;
             this.lblStatus.Location = new System.Drawing.Point(694, 5);
             this.lblStatus.Margin = new System.Windows.Forms.Padding(5);
@@ -292,7 +281,7 @@
             this.lblStatus.Size = new System.Drawing.Size(70, 20);
             this.lblStatus.TabIndex = 9;
             this.lblStatus.Text = "Website";
-            this.lblStatus.Click += new System.EventHandler(this.lblStatus_Click);
+            this.lblStatus.Click += this.lblStatus_Click;
             // 
             // MainWindow
             // 
@@ -300,16 +289,15 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(1318, 825);
             this.Controls.Add(this.splitContainer1);
-            this.DataBindings.Add(new System.Windows.Forms.Binding("Location", global::FileSearch.Properties.Settings.Default, "WindowLocation", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Location = global::FileSearch.Properties.Settings.Default.WindowLocation;
+            this.Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
+            this.Location = new System.Drawing.Point(100, 100);
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "MainWindow";
             this.Text = "GH Software File Search";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainWindow_FormClosing);
+            this.FormClosing += this.MainWindow_FormClosing;
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)this.splitContainer1).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
@@ -318,7 +306,6 @@
             this.tableLayoutPanel2.ResumeLayout(false);
             this.tableLayoutPanel2.PerformLayout();
             this.ResumeLayout(false);
-
         }
 
         #endregion
