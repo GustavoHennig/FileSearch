@@ -119,6 +119,7 @@
             this.label2.Size = new System.Drawing.Size(87, 25);
             this.label2.TabIndex = 0;
             this.label2.Text = "File name";
+            this.label2.Click += this.label2_Click;
             // 
             // panel1
             // 

@@ -9,4 +9,7 @@
 	<ItemGroup>
 		<Content Include="icon.ico" />
 	</ItemGroup>
+	<ItemGroup>
+	  <PackageReference Include="Modern.Forms" Version="0.3.0" />
+	</ItemGroup>
 </Project>

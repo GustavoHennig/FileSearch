@@ -69,6 +69,9 @@ namespace SimpleFileSearch
             }
             foreach (string s in Settings.Current.PathHistory)
             {
+                if (string.IsNullOrEmpty(s))
+                    continue;
+
                 cmbPath.Items.Add(s);
             }
 
@@ -150,6 +153,12 @@ namespace SimpleFileSearch
         private void MainWindow_FormClosing(object sender, FormClosingEventArgs e)
         {
             //Settings.Default.Save();
+        }
+
+        private void label2_Click(object sender, EventArgs e)
+        {
+            MainWindowMF mainWindowMF = new MainWindowMF();
+            mainWindowMF.Show();
         }
     }
 }
