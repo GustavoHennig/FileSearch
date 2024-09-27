@@ -1,0 +1,72 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="SimpleFileSearch.MainWindowAvalonia"
+        Title="GH Software File Search"
+        Width="800"
+        Height="600">
+
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="Auto"/>
+			<ColumnDefinition Width="*"/>
+		</Grid.ColumnDefinitions>
+
+		<!-- Left Panel -->
+		<ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto">
+			<StackPanel Margin="10">
+
+				<!-- File Name Label -->
+				<TextBlock Text="File name" Margin="0,0,0,5"/>
+
+				<!-- File Name TextBox -->
+				<TextBox x:Name="cmbFileName" Width="200" Margin="0,0,0,10"/>
+
+				<!-- Search in Files Contents Label -->
+				<TextBlock Text="Search in files contents" Margin="0,0,0,5"/>
+
+				<!-- Search in Files Contents TextBox -->
+				<TextBox x:Name="cmbInFile" Width="200" Margin="0,0,0,10"/>
+
+				<!-- Case Sensitive CheckBox -->
+				<CheckBox x:Name="chkCaseSens" Content="Case sensitive" Margin="0,0,0,10"/>
+
+				<!-- Path Label -->
+				<TextBlock Text="Path" Margin="0,0,0,5"/>
+
+				<!-- Path Selection -->
+				<StackPanel Orientation="Horizontal">
+					<TextBox x:Name="cmbPath" Width="150" Margin="0,0,5,0"/>
+					<Button x:Name="btnSearchFolder" Content="..." Width="30" Click="btnSearchFolder_Click"/>
+				</StackPanel>
+
+				<!-- Search and Close Buttons -->
+				<StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+					<Button x:Name="btnSearch" Content="Search" Width="80" Click="btnSearch_Click"/>
+					<Button x:Name="btnCancel" Content="Close" Width="80" Margin="5,0,0,0" Click="btnCancel_Click"/>
+				</StackPanel>
+
+				<!-- Status Panel -->
+				<Border BorderBrush="Black" BorderThickness="1" Margin="0,10,0,0">
+					<TextBlock x:Name="lblEstado" Margin="5"/>
+				</Border>
+			</StackPanel>
+		</ScrollViewer>
+
+		<!-- Right Panel -->
+		<Grid Grid.Column="1" Margin="10">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="*"/>
+			</Grid.RowDefinitions>
+
+			<!-- Website Label -->
+			<TextBlock x:Name="lblStatus" Text="Website" Foreground="Blue" TextDecorations="Underline"
+                       HorizontalAlignment="Right" Cursor="Hand" Margin="0,0,0,5" />
+<!--Tapped="lblStatus_Click"
+DoubleTapped="lstFiles_DoubleClick"
+-->
+<!-- Files ListBox -->
+<ListBox x:Name="lstFiles" Grid.Row="1" Margin="0,10,0,0" />
+		</Grid>
+	</Grid>
+</Window>

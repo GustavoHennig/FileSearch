@@ -1,21 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
 using System.IO;
 using Microsoft.Win32;
+using Avalonia;
+using System.Reflection;
 
 namespace SimpleFileSearch
 {
-    static class Program
+    internal class Program
     {
-
-
-
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
+        // Initialization code. Don't use any Avalonia, third-party APIs or any
+        // SynchronizationContext-reliant code before AppMain is called: things aren't initialized
+        // yet and stuff might break.
         [STAThread]
-        static void Main(string[] args)
+        public static void Main(string[] args) => BuildAvaloniaApp(args)
+            .StartWithClassicDesktopLifetime(args);
+
+        // Avalonia configuration, don't remove; also used by visual designer.
+        public static AppBuilder BuildAvaloniaApp(string[] args)
         {
             SetRegistryShellOption();
             Settings.Load();
@@ -32,15 +34,18 @@ namespace SimpleFileSearch
                 }
                 Settings.Save();
             }
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainWindow());
+                
+                return AppBuilder.Configure<App>()
+                    .UsePlatformDetect()
+                    .WithInterFont()
+                    .LogToTrace();
         }
+
         private static void SetRegistryShellOption()
         {
             try
             {
-                Registry.SetValue("HKEY_CLASSES_ROOT\\Directory\\shell\\GH Software FileSearch\\command", "", "\"" + Application.ExecutablePath + "\" \"%1\"");
+                //Registry.SetValue("HKEY_CLASSES_ROOT\\Directory\\shell\\GH Software FileSearch\\command", "", "\"" + Assembly.GetExecutingAssembly().GetFile().ExecutablePath + "\" \"%1\"");
             }
             catch (Exception)
             {
