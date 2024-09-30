@@ -1,10 +1,14 @@
-﻿using Avalonia.Controls;
+﻿using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Avalonia.Threading;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
 
 namespace SimpleFileSearch
 {
@@ -19,13 +23,10 @@ namespace SimpleFileSearch
                 return;
 
             LoadData();
-            this.Title += " - " + "1.0"; // Replace with Application.ProductVersion equivalent
-
-
-             
+            this.Title += " - " + Assembly.GetExecutingAssembly().GetName().Version.ToString();
         }
 
-         private void SaveData()
+        private void SaveData()
         {
             const int tammax = 50;
 
@@ -65,52 +66,80 @@ namespace SimpleFileSearch
         private void LoadData()
         {
             cmbFileName.ItemsSource = Settings.Current.FileNameHistory;
+            cmbFileName.SelectedItem = Settings.Current.FileNameHistory.FirstOrDefault();
+
             cmbInFile.ItemsSource = Settings.Current.SearchInsideFiles;
+            cmbInFile.SelectedItem = Settings.Current.SearchInsideFiles.FirstOrDefault();
+
             cmbPath.ItemsSource = Settings.Current.PathHistory;
-            cmbPath.Text = Settings.Current.CurrentDirectory;
+            if (string.IsNullOrEmpty(Settings.Current.CurrentDirectory))
+            {
+                cmbPath.SelectedItem = Settings.Current.PathHistory.FirstOrDefault();
+            }
+            else
+            {
+                cmbPath.Text = Settings.Current.CurrentDirectory;
+            }
         }
-        
-        private void btnSearch_Click(object sender, RoutedEventArgs e)
+
+        private async void btnSearch_Click(object sender, RoutedEventArgs e)
         {
+            progressBarSearching.IsVisible = true;
             // Access selected ComboBox values
             string fileName = cmbFileName.Text;
             string inFile = cmbInFile.Text;
             string path = cmbPath.Text;
+            bool caseSensitive = chkCaseSens.IsChecked.GetValueOrDefault();
 
-            PrintStatus("Saving data...");
-            SaveData();
 
-            PrintStatus("Searching files...");
-            FileSearcher fs = new FileSearcher();
-            fs.estado += fs_estado;
-
-            List<FileInfo> files = fs.SearchFiles(path, fileName, inFile, chkCaseSens.IsChecked.GetValueOrDefault());
-
-            PrintStatus("Listing files...");
-            foreach (var file in files.Take(2000))
+            try
             {
-                lstFiles.ItemsSource = files; // Bind found files to ListBox
+                PrintStatus("Saving data...");
+                SaveData();
+
+                PrintStatus("Searching files...");
+                FileSearcher fs = new FileSearcher();
+                fs.estado += PrintStatus;
+
+                List<FileInfo> files = await Task.Run(() =>
+                   {
+                       return fs.SearchFiles(path, fileName, inFile, caseSensitive);
+                   });
+
+                PrintStatus("Listing files...");
+
+                foreach (var file in files.Take(2000))
+                {
+                    lstFiles.ItemsSource = files; // Bind found files to ListBox
+                }
             }
+            catch (Exception)
+            {
 
-            PrintStatus("Ready.");
-        }
-        private void fs_estado(string value)
-        {
-            PrintStatus(value);
+                throw;
+            }
+            finally
+            {
+                progressBarSearching.IsVisible = false;
+                PrintStatus("Ready.");
+            }
         }
 
-        private void lstFiles_DoubleTapped(object sender, RoutedEventArgs e)
+        private void lstFiles_DoubleTapped(object? sender, Avalonia.Input.TappedEventArgs e)
         {
             if (lstFiles.SelectedItem is FileInfo f)
             {
-                Process.Start(new ProcessStartInfo("explorer.exe", f.Directory.FullName) { UseShellExecute = true });
+                ProcessStart(f.Directory.FullName);
             }
         }
 
         private void PrintStatus(string status)
         {
-            lblEstado.Text = status;
-            lblEstado.UpdateLayout();
+            Dispatcher.UIThread.Invoke(() =>
+           {
+               lblStatus.Text = status;
+           });
+
         }
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)
@@ -127,24 +156,11 @@ namespace SimpleFileSearch
                 cmbPath.Text = result;
             }
         }
-
-        private void lblStatus_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                OpenUrl("https://github.com/GustavoHennig/FileSearch") ;
-            }
-            catch (Exception)
-            {
-            }
-        }
-
-        
         private void ProcessStart(string path)
         {
             if (OperatingSystem.IsWindows())
             {
-                Process.Start("explorer.exe", path);
+                Process.Start(new ProcessStartInfo("explorer.exe", path) { UseShellExecute = true });
             }
             else if (OperatingSystem.IsMacOS())
             {
@@ -173,5 +189,23 @@ namespace SimpleFileSearch
             }
         }
 
+        private void lblAppInfo_Tapped(object? sender, Avalonia.Input.TappedEventArgs e)
+        {
+            try
+            {
+                OpenUrl("https://github.com/GustavoHennig/FileSearch");
+            }
+            catch (Exception)
+            {
+            }
+        }
+        private void AutoCompleteBox_GotFocus(object? sender, Avalonia.Input.GotFocusEventArgs e)
+        {
+            if (sender is AutoCompleteBox autoCompleteBox)
+            {
+                // Open the dropdown to show suggestions
+                autoCompleteBox.IsDropDownOpen = true;
+            }
+        }
     }
 }
