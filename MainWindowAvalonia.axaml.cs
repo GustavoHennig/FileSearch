@@ -14,78 +14,83 @@ namespace SimpleFileSearch
         public MainWindowAvalonia()
         {
             InitializeComponent();
+
+            if (Design.IsDesignMode)
+                return;
+
             LoadData();
             this.Title += " - " + "1.0"; // Replace with Application.ProductVersion equivalent
+
+
+             
         }
 
          private void SaveData()
         {
             const int tammax = 50;
 
-            //if (!Settings.Current.FileNameHistory.Contains(cmbFileName.Text))
-            //{
-            //    Settings.Current.FileNameHistory.Insert(0, cmbFileName.Text);
-            //    cmbFileName.Items = Settings.Current.FileNameHistory; // Update ItemsSource
-            //    if (Settings.Current.FileNameHistory.Count > tammax)
-            //    {
-            //        Settings.Current.FileNameHistory.RemoveAt(tammax - 1);
-            //    }
-            //}
+            if (!Settings.Current.FileNameHistory.Contains(cmbFileName.Text))
+            {
+                Settings.Current.FileNameHistory.Insert(0, cmbFileName.Text);
+                cmbFileName.ItemsSource = Settings.Current.FileNameHistory; // Update ItemsSource
+                if (Settings.Current.FileNameHistory.Count > tammax)
+                {
+                    Settings.Current.FileNameHistory.RemoveAt(tammax - 1);
+                }
+            }
 
-            //if (!Settings.Current.SearchInsideFiles.Contains(cmbInFile.Text))
-            //{
-            //    Settings.Current.SearchInsideFiles.Insert(0, cmbInFile.Text);
-            //    cmbInFile.Items = Settings.Current.SearchInsideFiles;
-            //    if (Settings.Current.SearchInsideFiles.Count > tammax)
-            //    {
-            //        Settings.Current.SearchInsideFiles.RemoveAt(tammax - 1);
-            //    }
-            //}
+            if (!Settings.Current.SearchInsideFiles.Contains(cmbInFile.Text))
+            {
+                Settings.Current.SearchInsideFiles.Insert(0, cmbInFile.Text);
+                cmbInFile.ItemsSource = Settings.Current.SearchInsideFiles;
+                if (Settings.Current.SearchInsideFiles.Count > tammax)
+                {
+                    Settings.Current.SearchInsideFiles.RemoveAt(tammax - 1);
+                }
+            }
 
-            //if (!Settings.Current.PathHistory.Contains(cmbPath.Text))
-            //{
-            //    Settings.Current.PathHistory.Insert(0, cmbPath.Text);
-            //    cmbPath.Items = Settings.Current.PathHistory;
-            //    if (Settings.Current.PathHistory.Count > tammax)
-            //    {
-            //        Settings.Current.PathHistory.RemoveAt(tammax - 1);
-            //    }
-            //}
+            if (!Settings.Current.PathHistory.Contains(cmbPath.Text))
+            {
+                Settings.Current.PathHistory.Insert(0, cmbPath.Text);
+                cmbPath.ItemsSource = Settings.Current.PathHistory;
+                if (Settings.Current.PathHistory.Count > tammax)
+                {
+                    Settings.Current.PathHistory.RemoveAt(tammax - 1);
+                }
+            }
 
             Settings.Save();
         }
 
         private void LoadData()
         {
-            //cmbFileName.Items = Settings.Current.FileNameHistory;
-            //cmbInFile.Items = Settings.Current.SearchInsideFiles;
-            //cmbPath.Items = Settings.Current.PathHistory;
-            //cmbPath.Text = Settings.Current.CurrentDirectory;
+            cmbFileName.ItemsSource = Settings.Current.FileNameHistory;
+            cmbInFile.ItemsSource = Settings.Current.SearchInsideFiles;
+            cmbPath.ItemsSource = Settings.Current.PathHistory;
+            cmbPath.Text = Settings.Current.CurrentDirectory;
         }
         
         private void btnSearch_Click(object sender, RoutedEventArgs e)
         {
-            //// Access selected ComboBox values
-            //string fileName = cmbFileName.Text;
-            //string inFile = cmbInFile.Text;
-            //string path = cmbPath.Text;
+            // Access selected ComboBox values
+            string fileName = cmbFileName.Text;
+            string inFile = cmbInFile.Text;
+            string path = cmbPath.Text;
 
-            //PrintStatus("Saving data...");
-            //SaveData();
-            //lstFiles.Items.Clear()
-            //    ; // Clear list
+            PrintStatus("Saving data...");
+            SaveData();
 
-            //PrintStatus("Searching files...");
-            //FileSearcher fs = new FileSearcher();
-            //fs.estado += fs_estado;
+            PrintStatus("Searching files...");
+            FileSearcher fs = new FileSearcher();
+            fs.estado += fs_estado;
 
-            //List<FileInfo> files = fs.SearchFiles(path, fileName, inFile, chkCaseSens.IsChecked.GetValueOrDefault());
+            List<FileInfo> files = fs.SearchFiles(path, fileName, inFile, chkCaseSens.IsChecked.GetValueOrDefault());
 
-            //PrintStatus("Listing files...");
-            //foreach (var file in files.Take(2000))
-            //{
-            //    lstFiles.Items = files; // Bind found files to ListBox
-            //}
+            PrintStatus("Listing files...");
+            foreach (var file in files.Take(2000))
+            {
+                lstFiles.ItemsSource = files; // Bind found files to ListBox
+            }
 
             PrintStatus("Ready.");
         }
@@ -105,6 +110,7 @@ namespace SimpleFileSearch
         private void PrintStatus(string status)
         {
             lblEstado.Text = status;
+            lblEstado.UpdateLayout();
         }
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)
@@ -118,7 +124,7 @@ namespace SimpleFileSearch
             var result = await dialog.ShowAsync(this);
             if (result != null)
             {
-            //    cmbPath.Text = result;
+                cmbPath.Text = result;
             }
         }
 

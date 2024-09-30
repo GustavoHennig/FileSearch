@@ -13,12 +13,9 @@ namespace SimpleFileSearch
         // SynchronizationContext-reliant code before AppMain is called: things aren't initialized
         // yet and stuff might break.
         [STAThread]
-        public static void Main(string[] args) => BuildAvaloniaApp(args)
-            .StartWithClassicDesktopLifetime(args);
-
-        // Avalonia configuration, don't remove; also used by visual designer.
-        public static AppBuilder BuildAvaloniaApp(string[] args)
+        public static void Main(string[] args)
         {
+
             SetRegistryShellOption();
             Settings.Load();
             if (args.Length > 0)
@@ -34,11 +31,18 @@ namespace SimpleFileSearch
                 }
                 Settings.Save();
             }
-                
-                return AppBuilder.Configure<App>()
-                    .UsePlatformDetect()
-                    .WithInterFont()
-                    .LogToTrace();
+
+            BuildAvaloniaApp()
+            .StartWithClassicDesktopLifetime(args);
+        }
+
+        // Avalonia configuration, don't remove; also used by visual designer.
+        public static AppBuilder BuildAvaloniaApp()
+        {
+            return AppBuilder.Configure<App>()
+                .UsePlatformDetect()
+                .WithInterFont()
+                .LogToTrace();
         }
 
         private static void SetRegistryShellOption()
