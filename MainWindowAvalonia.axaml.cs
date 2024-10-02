@@ -14,6 +14,7 @@ namespace SimpleFileSearch
 {
     public partial class MainWindowAvalonia : Window
     {
+        const int MaxHistorySize = 50;
 
         public MainWindowAvalonia()
         {
@@ -28,40 +29,30 @@ namespace SimpleFileSearch
 
         private void SaveData()
         {
-            const int tammax = 50;
-
-            if (!Settings.Current.FileNameHistory.Contains(cmbFileName.Text))
-            {
-                Settings.Current.FileNameHistory.Insert(0, cmbFileName.Text);
-                cmbFileName.ItemsSource = Settings.Current.FileNameHistory; // Update ItemsSource
-                if (Settings.Current.FileNameHistory.Count > tammax)
-                {
-                    Settings.Current.FileNameHistory.RemoveAt(tammax - 1);
-                }
-            }
-
-            if (!Settings.Current.SearchInsideFiles.Contains(cmbInFile.Text))
-            {
-                Settings.Current.SearchInsideFiles.Insert(0, cmbInFile.Text);
-                cmbInFile.ItemsSource = Settings.Current.SearchInsideFiles;
-                if (Settings.Current.SearchInsideFiles.Count > tammax)
-                {
-                    Settings.Current.SearchInsideFiles.RemoveAt(tammax - 1);
-                }
-            }
-
-            if (!Settings.Current.PathHistory.Contains(cmbPath.Text))
-            {
-                Settings.Current.PathHistory.Insert(0, cmbPath.Text);
-                cmbPath.ItemsSource = Settings.Current.PathHistory;
-                if (Settings.Current.PathHistory.Count > tammax)
-                {
-                    Settings.Current.PathHistory.RemoveAt(tammax - 1);
-                }
-            }
+            UpdateHistory(cmbFileName, Settings.Current.FileNameHistory);
+            UpdateHistory(cmbInFile, Settings.Current.SearchInsideFiles);
+            UpdateHistory(cmbPath, Settings.Current.PathHistory);
 
             Settings.Save();
         }
+
+        private void UpdateHistory(AutoCompleteBox comboBox, IList<string> historyList)
+        {
+            string? text = comboBox.Text;
+
+            if (!string.IsNullOrWhiteSpace(text) && !historyList.Contains(text))
+            {
+                historyList.Insert(0, text);
+                comboBox.ItemsSource = null; // Reset ItemsSource to refresh the binding
+                comboBox.ItemsSource = historyList;
+
+                if (historyList.Count > MaxHistorySize)
+                {
+                    historyList.RemoveAt(historyList.Count - 1); // Remove the oldest entry
+                }
+            }
+        }
+
 
         private void LoadData()
         {
