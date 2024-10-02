@@ -12,11 +12,11 @@ using System.Threading.Tasks;
 
 namespace SimpleFileSearch
 {
-    public partial class MainWindowAvalonia : Window
+    public partial class MainWindow : Window
     {
         const int MaxHistorySize = 50;
 
-        public MainWindowAvalonia()
+        public MainWindow()
         {
             InitializeComponent();
 
