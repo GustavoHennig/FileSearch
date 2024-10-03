@@ -32,7 +32,10 @@ namespace SimpleFileSearch
             UpdateHistory(cmbFileName, Settings.Current.FileNameHistory);
             UpdateHistory(cmbInFile, Settings.Current.SearchInsideFiles);
             UpdateHistory(cmbPath, Settings.Current.PathHistory);
-
+            Settings.Current.MainWindowWidth = this.Width;
+            Settings.Current.MainWindowHeight = this.Height;
+            Settings.Current.SplitContainer1Panel1Width = (int)gridMain.ColumnDefinitions[0].Width.Value;
+            Settings.Current.SplitContainer1Panel2Width = (int)gridMain.ColumnDefinitions[2].Width.Value;
             Settings.Save();
         }
 
@@ -56,6 +59,16 @@ namespace SimpleFileSearch
 
         private void LoadData()
         {
+
+            if (Settings.Current.MainWindowWidth > 0 && Settings.Current.MainWindowHeight > 0)
+            {
+                this.Width = Settings.Current.MainWindowWidth;
+                this.Height = Settings.Current.MainWindowHeight;
+            }
+            gridMain.ColumnDefinitions[0].Width =new GridLength(Settings.Current.SplitContainer1Panel1Width);
+            gridMain.ColumnDefinitions[2].Width = new GridLength(Settings.Current.SplitContainer1Panel2Width);
+
+
             cmbFileName.ItemsSource = Settings.Current.FileNameHistory;
             cmbFileName.SelectedItem = Settings.Current.FileNameHistory.FirstOrDefault();
 
@@ -135,6 +148,7 @@ namespace SimpleFileSearch
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
+            SaveData();
             this.Close();
         }
 

@@ -9,8 +9,10 @@ namespace SimpleFileSearch
         public List<string> FileNameHistory { get; set; } = new List<string>();
         public List<string> PathHistory { get; set; } = new List<string>();
         public List<string> SearchInsideFiles { get; set; } = new List<string>();
-        public string CurrentDirectory { get; internal set; }
-        public int SplitContainer1Panel1Width { get; internal set; }
-        public int SplitContainer1Panel2Width { get; internal set; }
+        public string CurrentDirectory { get;  set; }
+        public int SplitContainer1Panel1Width { get;  set; }
+        public int SplitContainer1Panel2Width { get;  set; }
+        public double MainWindowWidth { get;  set; }
+        public double MainWindowHeight { get;  set; }
     }
 }
