@@ -1,4 +1,4 @@
-﻿# FileSearch
+﻿# SimpleFileSearch
 
 FileSearch is a desktop file searcher without indexing. It is simple and easy to use, allowing you to search everything, including file contents.
 

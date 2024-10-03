@@ -4,6 +4,7 @@ using System.IO;
 using Microsoft.Win32;
 using Avalonia;
 using System.Reflection;
+using System.Diagnostics;
 
 namespace SimpleFileSearch
 {
@@ -49,7 +50,11 @@ namespace SimpleFileSearch
         {
             try
             {
-                //Registry.SetValue("HKEY_CLASSES_ROOT\\Directory\\shell\\GH Software FileSearch\\command", "", "\"" + Assembly.GetExecutingAssembly().GetFile().ExecutablePath + "\" \"%1\"");
+                if (OperatingSystem.IsWindows())
+                {
+                    var fileName = Process.GetCurrentProcess().MainModule.FileName;
+                    Registry.SetValue($"HKEY_CLASSES_ROOT\\Directory\\shell\\GH Software FileSearch\\command", "", $"\"{fileName}\" \"%1\"");
+                }
             }
             catch (Exception)
             {
