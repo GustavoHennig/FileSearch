@@ -25,7 +25,9 @@ namespace SimpleFileSearch
 
             LoadData();
             this.Title += " - " + Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            this.Closing += this.MainWindow_Closing; ;
         }
+
 
         private void SaveData()
         {
@@ -43,13 +45,14 @@ namespace SimpleFileSearch
         {
             string? text = comboBox.Text;
 
-            if (!string.IsNullOrWhiteSpace(text) && !historyList.Contains(text))
+            if (text is not null)
             {
+                historyList.Remove(text);
                 historyList.Insert(0, text);
                 comboBox.ItemsSource = null; // Reset ItemsSource to refresh the binding
                 comboBox.ItemsSource = historyList;
 
-                if (historyList.Count > MaxHistorySize)
+                while (historyList.Count > MaxHistorySize)
                 {
                     historyList.RemoveAt(historyList.Count - 1); // Remove the oldest entry
                 }
@@ -65,8 +68,8 @@ namespace SimpleFileSearch
                 this.Width = Settings.Current.MainWindowWidth;
                 this.Height = Settings.Current.MainWindowHeight;
             }
-            gridMain.ColumnDefinitions[0].Width =new GridLength(Settings.Current.SplitContainer1Panel1Width);
-            gridMain.ColumnDefinitions[2].Width = new GridLength(Settings.Current.SplitContainer1Panel2Width);
+            gridMain.ColumnDefinitions[0].Width = new GridLength(Settings.Current.SplitContainer1Panel1Width);
+            //        gridMain.ColumnDefinitions[2].Width = new GridLength(Settings.Current.SplitContainer1Panel2Width);
 
 
             cmbFileName.ItemsSource = Settings.Current.FileNameHistory;
@@ -76,7 +79,7 @@ namespace SimpleFileSearch
             cmbInFile.SelectedItem = Settings.Current.SearchInsideFiles.FirstOrDefault();
 
             cmbPath.ItemsSource = Settings.Current.PathHistory;
-            if (string.IsNullOrEmpty(Settings.Current.CurrentDirectory))
+            if (Settings.Current.CurrentDirectory is null)
             {
                 cmbPath.SelectedItem = Settings.Current.PathHistory.FirstOrDefault();
             }
@@ -133,7 +136,7 @@ namespace SimpleFileSearch
         {
             if (lstFiles.SelectedItem is FileInfo f)
             {
-                ProcessStart(f.Directory.FullName);
+                ProcessStart(f.FullName);
             }
         }
 
@@ -146,9 +149,13 @@ namespace SimpleFileSearch
 
         }
 
-        private void btnCancel_Click(object sender, RoutedEventArgs e)
+        private void MainWindow_Closing(object? sender, WindowClosingEventArgs e)
         {
             SaveData();
+        }
+
+        private void btnClose_Click(object sender, RoutedEventArgs e)
+        {
             this.Close();
         }
 
@@ -161,19 +168,19 @@ namespace SimpleFileSearch
                 cmbPath.Text = result;
             }
         }
-        private void ProcessStart(string path)
+        private void ProcessStart(string fullFilePath)
         {
             if (OperatingSystem.IsWindows())
             {
-                Process.Start(new ProcessStartInfo("explorer.exe", path) { UseShellExecute = true });
+                Process.Start(new ProcessStartInfo("explorer.exe", $"/select,\"{fullFilePath}\"") { UseShellExecute = true });
             }
             else if (OperatingSystem.IsMacOS())
             {
-                Process.Start("open", path);
+                Process.Start("open", fullFilePath);
             }
             else if (OperatingSystem.IsLinux())
             {
-                Process.Start("xdg-open", path);
+                Process.Start("xdg-open", fullFilePath);
             }
 
 

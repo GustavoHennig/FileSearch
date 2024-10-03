@@ -1,18 +1,17 @@
-# FileSearch
+﻿# FileSearch
 
-This is a desktop file searcher without indexing. Simple and easy, it searches everything, including contents.
+FileSearch is a desktop file searcher without indexing. It is simple and easy to use, allowing you to search everything, including file contents.
 
- * Yes, it's slow, don't try to search your entire disk drive :|
+* It has a very specific use case for small folders, so avoid searching your entire disk drive—you may regret it! 😅
 
-Download the binary here:
-https://github.com/GustavoHennig/FileSearch/releases/tag/1.0.0.5
+Download the binary here:  
+https://github.com/GustavoHennig/FileSearch/releases/tag/1.2
+
+![Screenshot](https://raw.githubusercontent.com/GustavoHennig/FileSearch/master/screenshot1.2.png "Screenshot")
 
 
-![alt text](https://raw.githubusercontent.com/GustavoHennig/FileSearch/master/screenshot.png "Screenshot")
+This code was originally written in 2009, but recently, out of boredom, I updated it to .NET 6+ and migrated the UI to Avalonia. It may (or may not) work on other operating systems.
 
 
-This code is old, it was written in 2009, but still works. \o/
-
-Gustavo Augusto Hennig
-
-From: [Plagius - Plagiarism Checker](http://www.plagius.com)
+**Gustavo Augusto Hennig**  
+From: [Plagius - Plagiarism Checker](https://www.plagius.com)
