@@ -1,6 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using System;
 using System.Collections.Generic;
@@ -93,24 +94,28 @@ namespace SimpleFileSearch
         {
             progressBarSearching.IsVisible = true;
             // Access selected ComboBox values
-            string fileName = cmbFileName.Text;
-            string inFile = cmbInFile.Text;
-            string path = cmbPath.Text;
+            string fileNamePatterns = cmbFileName.Text;
+            string searchText = cmbInFile.Text;
+            string directoryPath = cmbPath.Text;
             bool caseSensitive = chkCaseSens.IsChecked.GetValueOrDefault();
 
-
+            Stopwatch stopwatch = new Stopwatch();
             try
             {
                 PrintStatus("Saving data...");
                 SaveData();
 
                 PrintStatus("Searching files...");
-                FileSearcher fs = new FileSearcher();
-                fs.estado += PrintStatus;
+                //FileSearcher fs = new FileSearcher();
+                FileSearcher2 fs = new FileSearcher2();
+                lstFiles.ItemsSource = null;
 
-                List<FileInfo> files = await Task.Run(() =>
+                stopwatch.Start();
+
+                //ObservableCollection
+                List<FileInfo> files = await Task.Run(async () =>
                    {
-                       return fs.SearchFiles(path, fileName, inFile, caseSensitive);
+                       return await fs.SearchFilesAsync(directoryPath, fileNamePatterns, searchText, caseSensitive, false, PrintStatus);
                    });
 
                 PrintStatus("Listing files...");
@@ -128,7 +133,7 @@ namespace SimpleFileSearch
             finally
             {
                 progressBarSearching.IsVisible = false;
-                PrintStatus("Ready.");
+                PrintStatus($"Finished in {stopwatch.ElapsedMilliseconds}ms");
             }
         }
 
@@ -159,13 +164,26 @@ namespace SimpleFileSearch
             this.Close();
         }
 
+        private void btnCalculateTotalSize_Click(object sender, RoutedEventArgs e)
+        {
+            if (lstFiles.ItemsSource is List<FileInfo> files)
+            {
+                long totalSize = files.Sum(f => f.Length);
+                lblStatus.Text = $"Total size: {totalSize / 1024:N0} KB";
+            }
+        }
+
         private async void btnSearchFolder_Click(object sender, RoutedEventArgs e)
         {
-            var dialog = new OpenFolderDialog();
-            var result = await dialog.ShowAsync(this);
-            if (result != null)
+            string? currentPath = cmbPath.Text;
+            var options = new FolderPickerOpenOptions
             {
-                cmbPath.Text = result;
+                SuggestedStartLocation = await this.StorageProvider.TryGetFolderFromPathAsync(currentPath)
+            };
+            var result = await this.StorageProvider.OpenFolderPickerAsync(options);
+            if (result != null && result.Any())
+            {
+                cmbPath.Text = result.First().Path.LocalPath;
             }
         }
         private void ProcessStart(string fullFilePath)

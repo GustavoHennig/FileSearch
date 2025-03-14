@@ -75,6 +75,9 @@
 				<Button x:Name="btnClose" Content="Close"  Margin="5" Click="btnClose_Click"/>
 			</StackPanel>
 
+			<Button x:Name="btnCalculateSize" Content="Calculate Total Size" Grid.Row="8"  Margin="5" Click="btnCalculateTotalSize_Click"/>
+
+
 
 		</Grid>
 

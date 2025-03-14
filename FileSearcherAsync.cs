@@ -12,7 +12,7 @@ namespace SimpleFileSearch
     /// Provides functionality for searching files by name and optionally searching for text within files.
     /// The search can be case-sensitive and/or accent-insensitive.
     /// </summary>
-    public class FileSearcher
+    public class FileSearcherAsync
     {
         /// <summary>
         /// Searches for files in the specified directory based on the given filename patterns.
@@ -25,7 +25,7 @@ namespace SimpleFileSearch
         /// <param name="ignoreAccents">Determines if accentuation should be ignored in the search.</param>
         /// <param name="statusCallback">Callback function to report status updates.</param>
         /// <returns>A list of matching <see cref="FileInfo"/> objects.</returns>
-        public List<FileInfo> SearchFilesAsync(string directoryPath, string filenamePatterns, string searchText, bool isCaseSensitive, bool ignoreAccents, Action<string> statusCallback)
+        public async Task<List<FileInfo>> SearchFilesAsync(string directoryPath, string filenamePatterns, string searchText, bool isCaseSensitive, bool ignoreAccents, Action<string> statusCallback)
         {
             List<FileInfo> matchingFiles = new List<FileInfo>();
             bool searchInsideFiles = !string.IsNullOrEmpty(searchText);
@@ -66,7 +66,7 @@ namespace SimpleFileSearch
                     // Check if the file contains the search text (if applicable)
                     if (searchInsideFiles)
                     {
-                        if ( ContainsTextInFile(filePath, searchText, isCaseSensitive, ignoreAccents))
+                        if (await ContainsTextInFileAsync(filePath, searchText, isCaseSensitive, ignoreAccents))
                         {
                             matchingFiles.Add(new FileInfo(filePath));
                         }
@@ -138,51 +138,51 @@ namespace SimpleFileSearch
             return false;
         }
 
-        /// <summary>
-        /// Checks if a given text exists within a file.
-        /// </summary>
-        /// <param name="filePath">The file to search.</param>
-        /// <param name="searchText">The text to find.</param>
-        /// <param name="isCaseSensitive">Determines if the search should be case-sensitive.</param>
-        /// <param name="ignoreAccents">Determines if accentuation should be ignored.</param>
-        /// <returns>True if the text is found, otherwise false.</returns>
-        private bool ContainsTextInFile(string filePath, string searchText, bool isCaseSensitive, bool ignoreAccents)
-        {
-            try
-            {
-                StringComparison comparisonType = isCaseSensitive
-                    ? StringComparison.InvariantCulture
-                    : StringComparison.InvariantCultureIgnoreCase;
+        ///// <summary>
+        ///// Checks if a given text exists within a file.
+        ///// </summary>
+        ///// <param name="filePath">The file to search.</param>
+        ///// <param name="searchText">The text to find.</param>
+        ///// <param name="isCaseSensitive">Determines if the search should be case-sensitive.</param>
+        ///// <param name="ignoreAccents">Determines if accentuation should be ignored.</param>
+        ///// <returns>True if the text is found, otherwise false.</returns>
+        //private bool ContainsTextInFile(string filePath, string searchText, bool isCaseSensitive, bool ignoreAccents)
+        //{
+        //    try
+        //    {
+        //        StringComparison comparisonType = isCaseSensitive
+        //            ? StringComparison.InvariantCulture
+        //            : StringComparison.InvariantCultureIgnoreCase;
 
-                // Normalize the search text if ignoring accents
-                if (ignoreAccents)
-                {
-                    searchText = RemoveDiacritics(searchText);
-                }
+        //        // Normalize the search text if ignoring accents
+        //        if (ignoreAccents)
+        //        {
+        //            searchText = RemoveDiacritics(searchText);
+        //        }
 
-                using StreamReader reader = new StreamReader(filePath);
+        //        using StreamReader reader = new StreamReader(filePath);
 
-                while (!reader.EndOfStream)
-                {
-                    string line = reader.ReadLine();
-                    if (line != null)
-                    {
+        //        while (!reader.EndOfStream)
+        //        {
+        //            string line = reader.ReadLine();
+        //            if (line != null)
+        //            {
 
 
-                        string lineToCompare = ignoreAccents ? RemoveDiacritics(line) : line;
+        //                string lineToCompare = ignoreAccents ? RemoveDiacritics(line) : line;
 
-                        if (lineToCompare.Contains(searchText, comparisonType))
-                        {
-                            return true;
-                        }
-                    }
-                }
-            }
-            catch (IOException) { /* Ignore file access errors */ }
-            catch (UnauthorizedAccessException) { /* Ignore permission errors */ }
+        //                if (lineToCompare.Contains(searchText, comparisonType))
+        //                {
+        //                    return true;
+        //                }
+        //            }
+        //        }
+        //    }
+        //    catch (IOException) { /* Ignore file access errors */ }
+        //    catch (UnauthorizedAccessException) { /* Ignore permission errors */ }
 
-            return false;
-        }
+        //    return false;
+        //}
 
         /// <summary>
         /// Performs parallel text comparison on a batch of lines.

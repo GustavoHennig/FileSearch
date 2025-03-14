@@ -13,5 +13,12 @@ https://github.com/GustavoHennig/FileSearch/releases/tag/1.2
 This code was originally written in 2009, but recently, out of boredom, I updated it to .NET 6+ and migrated the UI to Avalonia. It may (or may not) work on other operating systems.
 
 
+## TODO
+- [ ] Allow remove from search history
+- [ ] Checkbox to ignore accents
+- [ ] Textbox to limit file size for contents search
+- [ ] 
+
+
 **Gustavo Augusto Hennig**  
 From: [Plagius - Plagiarism Checker](https://www.plagius.com)
