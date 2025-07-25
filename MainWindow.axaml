@@ -11,7 +11,6 @@
 		</Style>
 	</Window.Styles>
 
-
 	<Grid x:Name="gridMain" RowDefinitions="*,Auto">
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="Auto"/>
@@ -19,11 +18,10 @@
 			<ColumnDefinition Width="*"/>
 		</Grid.ColumnDefinitions>
 
-
-
 		<!-- Left Panel -->
 		<Grid Grid.Column="0" >
 			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto"/>
 				<RowDefinition Height="Auto"/>
 				<RowDefinition Height="Auto"/>
 				<RowDefinition Height="Auto"/>
@@ -45,39 +43,68 @@
 			<TextBlock Text="File name" Margin="5" Grid.Row="0"/>
 
 			<!-- File Name TextBox -->
-			<AutoCompleteBox x:Name="cmbFileName"  Margin="5,5,5,10" Grid.Row="1"/>
+			<AutoCompleteBox x:Name="cmbFileName"  Margin="5,5,5,10" Grid.Row="1">
+				<AutoCompleteBox.ContextMenu>
+					<ContextMenu>
+						<MenuItem Header="Remove from History" Click="RemoveFromFileNameHistory_Click"/>
+						<MenuItem Header="Clear All History" Click="ClearFileNameHistory_Click"/>
+					</ContextMenu>
+				</AutoCompleteBox.ContextMenu>
+			</AutoCompleteBox>
 
 			<!-- Search in Files Contents Label -->
 			<TextBlock Text="Search in files contents" Margin="5" Grid.Row="2"/>
 
 			<!-- Search in Files Contents TextBox -->
-			<AutoCompleteBox x:Name="cmbInFile" Margin="5,5,5,10" Grid.Row="3"/>
+			<AutoCompleteBox x:Name="cmbInFile" Margin="5,5,5,10" Grid.Row="3">
+				<AutoCompleteBox.ContextMenu>
+					<ContextMenu>
+						<MenuItem Header="Remove from History" Click="RemoveFromInFileHistory_Click"/>
+						<MenuItem Header="Clear All History" Click="ClearInFileHistory_Click"/>
+					</ContextMenu>
+				</AutoCompleteBox.ContextMenu>
+			</AutoCompleteBox>
 
 			<!-- Case Sensitive CheckBox -->
 			<CheckBox x:Name="chkCaseSens" Content="Case sensitive" Margin="5,5,5,10" Grid.Row="4"/>
 
+			<!-- Ignore Accentuation CheckBox -->
+			<CheckBox x:Name="chkIgnoreAccent" Content="Ignore accentuation" Margin="5,5,5,10" Grid.Row="5"/>
+
 			<!-- Path Label -->
-			<TextBlock Text="Path" Margin="5" Grid.Row="5"/>
+			<TextBlock Text="Path" Margin="5" Grid.Row="6"/>
 
 			<!-- Path Selection -->
-			<Grid ColumnDefinitions="*,Auto" Grid.Row="6">
+			<Grid ColumnDefinitions="*,Auto" Grid.Row="7">
 
 				<AutoCompleteBox x:Name="cmbPath"  Margin="5" Grid.Column="0"
-								 IsTextCompletionEnabled="True" Focusable="True" GotFocus="AutoCompleteBox_GotFocus"
-				 />
+								 IsTextCompletionEnabled="True" Focusable="True" GotFocus="AutoCompleteBox_GotFocus">
+					<AutoCompleteBox.ContextMenu>
+						<ContextMenu>
+							<MenuItem Header="Remove from History" Click="RemoveFromPathHistory_Click"/>
+							<MenuItem Header="Clear All History" Click="ClearPathHistory_Click"/>
+						</ContextMenu>
+					</AutoCompleteBox.ContextMenu>
+				</AutoCompleteBox>
 				<Button x:Name="btnSearchFolder" Grid.Column="1" Content="..." Click="btnSearchFolder_Click" />
 			</Grid>
 
+			<!-- Max File Size Label and TextBox -->
+			<TextBlock Text="Max file size to search contents (KB)" Margin="5" Grid.Row="8"/>
+			<TextBox x:Name="txtMaxFileSize" Margin="5,5,5,10" Grid.Row="9"/>
+
+			<!-- Number of Parallel Searches Label and TextBox -->
+			<TextBlock Text="Number of parallel searches" Margin="5" Grid.Row="10"/>
+			<TextBox x:Name="txtParallelSearches" Margin="5,5,5,10" Grid.Row="11"/>
+
 			<!-- Search and Close Buttons -->
-			<StackPanel Orientation="Horizontal" Margin="5,10,5,5" Grid.Row="7" HorizontalAlignment="Right">
+			<StackPanel Orientation="Horizontal" Margin="5,10,5,5" Grid.Row="12" HorizontalAlignment="Right">
 				<Button x:Name="btnSearch" Content="Search"  Click="btnSearch_Click"/>
-				<!-- TODO: Search abort -->
+				<Button x:Name="btnCancel" Content="Cancel" Margin="5,0,0,0" Click="btnCancel_Click" IsVisible="False"/>
 				<Button x:Name="btnClose" Content="Close"  Margin="5" Click="btnClose_Click"/>
 			</StackPanel>
 
-			<Button x:Name="btnCalculateSize" Content="Calculate Total Size" Grid.Row="8"  Margin="5" Click="btnCalculateTotalSize_Click"/>
-
-
+			<Button x:Name="btnCalculateSize" Content="Calculate Total Size" Grid.Row="13"  Margin="5" Click="btnCalculateTotalSize_Click"/>
 
 		</Grid>
 
@@ -109,4 +136,3 @@
 
 	</Grid>
 </Window>
-

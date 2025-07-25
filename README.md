@@ -1,8 +1,8 @@
 ﻿# SimpleFileSearch
 
-FileSearch is a desktop file searcher without indexing. It is simple and easy to use, allowing you to search everything, including file contents.
+SimpleFileSearch is a desktop file search tool that does not use indexing. It is simple and easy to use, allowing you to search for everything, including file contents.
 
-* It has a very specific use case for small folders, so avoid searching your entire disk drive—you may regret it! 😅
+* It is intended for small folders; avoid searching your entire disk drive — you may regret it! 😅
 
 Download the binary here:  
 https://github.com/GustavoHennig/FileSearch/releases/tag/1.2
@@ -17,7 +17,7 @@ This code was originally written in 2009, but recently, out of boredom, I update
 - [ ] Allow remove from search history
 - [ ] Checkbox to ignore accents
 - [ ] Textbox to limit file size for contents search
-- [ ] 
+- [ ] Add a cancel button during searches
 
 
 **Gustavo Augusto Hennig**  

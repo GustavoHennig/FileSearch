@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SimpleFileSearch
@@ -16,6 +17,7 @@ namespace SimpleFileSearch
     public partial class MainWindow : Window
     {
         const int MaxHistorySize = 50;
+        private CancellationTokenSource? _searchCancellationTokenSource;
 
         public MainWindow()
         {
@@ -35,6 +37,11 @@ namespace SimpleFileSearch
             UpdateHistory(cmbFileName, Settings.Current.FileNameHistory);
             UpdateHistory(cmbInFile, Settings.Current.SearchInsideFiles);
             UpdateHistory(cmbPath, Settings.Current.PathHistory);
+            
+            Settings.Current.MaxFileSize = int.TryParse(txtMaxFileSize.Text, out var maxSize) ? maxSize : 0;
+            Settings.Current.ParallelSearches = int.TryParse(txtParallelSearches.Text, out var parallel) ? parallel : 1;
+            Settings.Current.IgnoreAccentuation = chkIgnoreAccent.IsChecked.GetValueOrDefault();
+
             Settings.Current.MainWindowWidth = this.Width;
             Settings.Current.MainWindowHeight = this.Height;
             Settings.Current.SplitContainer1Panel1Width = (int)gridMain.ColumnDefinitions[0].Width.Value;
@@ -88,16 +95,30 @@ namespace SimpleFileSearch
             {
                 cmbPath.Text = Settings.Current.CurrentDirectory;
             }
+
+            txtMaxFileSize.Text = Settings.Current.MaxFileSize?.ToString();
+            txtParallelSearches.Text = Settings.Current.ParallelSearches?.ToString();
+            chkIgnoreAccent.IsChecked = Settings.Current.IgnoreAccentuation;
         }
 
         private async void btnSearch_Click(object sender, RoutedEventArgs e)
         {
+            _searchCancellationTokenSource?.Cancel();
+            _searchCancellationTokenSource = new CancellationTokenSource();
+            
             progressBarSearching.IsVisible = true;
+            btnSearch.IsEnabled = false;
+            btnCancel.IsVisible = true;
+            
             // Access selected ComboBox values
-            string fileNamePatterns = cmbFileName.Text;
-            string searchText = cmbInFile.Text;
-            string directoryPath = cmbPath.Text;
+            string fileNamePatterns = cmbFileName.Text ?? "*";
+            string searchText = cmbInFile.Text ?? "";
+            string directoryPath = cmbPath.Text ?? "";
             bool caseSensitive = chkCaseSens.IsChecked.GetValueOrDefault();
+            bool ignoreAccent = chkIgnoreAccent.IsChecked.GetValueOrDefault();
+            int maxFileSize = int.TryParse(txtMaxFileSize.Text, out var size) ? size : 0;
+            int parallelSearches = int.TryParse(txtParallelSearches.Text, out var parallel) ? parallel : 1;
+            
 
             Stopwatch stopwatch = new Stopwatch();
             try
@@ -106,34 +127,41 @@ namespace SimpleFileSearch
                 SaveData();
 
                 PrintStatus("Searching files...");
-                //FileSearcher fs = new FileSearcher();
                 FileSearcher2 fs = new FileSearcher2();
                 lstFiles.ItemsSource = null;
 
                 stopwatch.Start();
 
-                //ObservableCollection
                 List<FileInfo> files = await Task.Run(async () =>
                    {
-                       return await fs.SearchFilesAsync(directoryPath, fileNamePatterns, searchText, caseSensitive, false, PrintStatus);
-                   });
+                       return await fs.SearchFilesAsync(directoryPath, fileNamePatterns, searchText, caseSensitive, ignoreAccent, maxFileSize, parallelSearches, PrintStatus, _searchCancellationTokenSource.Token);
+                   }, _searchCancellationTokenSource.Token);
 
-                PrintStatus("Listing files...");
-
-                foreach (var file in files.Take(2000))
+                if (!_searchCancellationTokenSource.Token.IsCancellationRequested)
                 {
-                    lstFiles.ItemsSource = files; // Bind found files to ListBox
+                    PrintStatus("Listing files...");
+                    lstFiles.ItemsSource = files.Take(10000).ToList();
+                    PrintStatus($"Finished in {stopwatch.ElapsedMilliseconds}ms - Found {files.Count} files");
+                }
+                else
+                {
+                    PrintStatus("Search cancelled");
                 }
             }
-            catch (Exception)
+            catch (OperationCanceledException)
             {
-
-                throw;
+                PrintStatus("Search cancelled");
+            }
+            catch (Exception ex)
+            {
+                PrintStatus($"Error: {ex.Message}");
             }
             finally
             {
                 progressBarSearching.IsVisible = false;
-                PrintStatus($"Finished in {stopwatch.ElapsedMilliseconds}ms");
+                btnSearch.IsEnabled = true;
+                btnCancel.IsVisible = false;
+                stopwatch.Stop();
             }
         }
 
@@ -157,6 +185,11 @@ namespace SimpleFileSearch
         private void MainWindow_Closing(object? sender, WindowClosingEventArgs e)
         {
             SaveData();
+        }
+
+        private void btnCancel_Click(object sender, RoutedEventArgs e)
+        {
+            _searchCancellationTokenSource?.Cancel();
         }
 
         private void btnClose_Click(object sender, RoutedEventArgs e)
@@ -236,6 +269,58 @@ namespace SimpleFileSearch
                 // Open the dropdown to show suggestions
                 autoCompleteBox.IsDropDownOpen = true;
             }
+        }
+
+        private void RemoveFromFileNameHistory_Click(object? sender, RoutedEventArgs e)
+        {
+            RemoveFromHistory(cmbFileName, Settings.Current.FileNameHistory);
+        }
+
+        private void ClearFileNameHistory_Click(object? sender, RoutedEventArgs e)
+        {
+            ClearHistory(cmbFileName, Settings.Current.FileNameHistory);
+        }
+
+        private void RemoveFromInFileHistory_Click(object? sender, RoutedEventArgs e)
+        {
+            RemoveFromHistory(cmbInFile, Settings.Current.SearchInsideFiles);
+        }
+
+        private void ClearInFileHistory_Click(object? sender, RoutedEventArgs e)
+        {
+            ClearHistory(cmbInFile, Settings.Current.SearchInsideFiles);
+        }
+
+        private void RemoveFromPathHistory_Click(object? sender, RoutedEventArgs e)
+        {
+            RemoveFromHistory(cmbPath, Settings.Current.PathHistory);
+        }
+
+        private void ClearPathHistory_Click(object? sender, RoutedEventArgs e)
+        {
+            ClearHistory(cmbPath, Settings.Current.PathHistory);
+        }
+
+        private void RemoveFromHistory(AutoCompleteBox comboBox, IList<string> historyList)
+        {
+            string? text = comboBox.Text;
+            if (!string.IsNullOrEmpty(text) && historyList.Contains(text))
+            {
+                historyList.Remove(text);
+                comboBox.ItemsSource = null;
+                comboBox.ItemsSource = historyList;
+                comboBox.Text = "";
+                Settings.Save();
+            }
+        }
+
+        private void ClearHistory(AutoCompleteBox comboBox, IList<string> historyList)
+        {
+            historyList.Clear();
+            comboBox.ItemsSource = null;
+            comboBox.ItemsSource = historyList;
+            comboBox.Text = "";
+            Settings.Save();
         }
     }
 }

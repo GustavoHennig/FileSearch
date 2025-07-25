@@ -14,5 +14,8 @@ namespace SimpleFileSearch
         public int SplitContainer1Panel2Width { get;  set; }
         public double MainWindowWidth { get;  set; }
         public double MainWindowHeight { get;  set; }
+        public int? MaxFileSize { get; internal set; }
+        public int? ParallelSearches { get; internal set; }
+        public bool? IgnoreAccentuation { get; internal set; }
     }
 }
